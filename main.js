@@ -3,7 +3,7 @@ const fs = require('fs');
 const readline = require('readline');
 
 let results = [];
-
+let jobs = [];
 // Configuração do Banco
 const HOST = "mysql-209830-0.cloudclusters.net";
 const USER = "admin";
@@ -44,7 +44,7 @@ const Pessoa = sequelize.define('pessoa', {
     user_id: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true
+        defaultValue: "pad"
     },
     first_name: DataTypes.STRING,
     last_name: DataTypes.STRING,
@@ -55,15 +55,14 @@ const Pessoa = sequelize.define('pessoa', {
 });
 
 const headers = [
-    'Index',
-    'UserId',
-    'FirstName',
-    'LastName',
-    'Sex',
-    'Email',
-    'Phone',
-    'DateOfBirth',
-    'JobTitle'
+    'id',
+    'user_id',
+    'first_name',
+    'last_name',
+    'sex',
+    'email',
+    'phone',
+    'date_of_birth'
 ];
 
 const rl = readline.createInterface({
@@ -75,32 +74,44 @@ let isFirstLine = true;
 
 let contador = 0;
 
+
 rl.on('line', (line) => {
 
-  if (isFirstLine) {
-    isFirstLine = false;
-    return;
-  }
-
-  line = line.replace(/^"|"$/g, '');
-
-  const values = line.split(',');
-
-  const obj = {};
-
-  headers.forEach((header, index) => {
-    obj[header] = values[index];
+    if (isFirstLine) {
+      isFirstLine = false;
+      return;
+    }
+  
+    line = line.replace(/^"|"$/g, '');
+  
+    const values = line.split(',');
+  
+    const obj = {};
+    const job = {};
+  
+    headers.forEach((header, index) => {
+      obj[header] = values[index];
+    });
+      job_str = values[9] === undefined? values[8] : values[8] + values[9]
+      job['job_title'] = job_str.replace(/^"|"$/g, '').replace(/"/g, '').trim();
+  
+    jobs.push(job)
+    results.push(obj);
+  
   });
-
-  results.push(obj);
-
-  contador++;
-
-   // if (contador <= 100000) {
-   //     console.log("Registro separado:");
-        console.log(obj);
-   // }
-
-});
-
-console.log(results);
+  rl.on('close', async () => {
+      const jobsMap = new Map();
+        console.log(jobs)
+      jobs.forEach(job => {
+          jobsMap.set(job.job_title, job);
+      });
+  
+      const jobsUnique = Array.from(jobsMap.values());
+      console.log(jobsUnique.length, results.length)
+  
+      await Job.sync({force: true});
+      await Job.bulkCreate(jobsUnique);
+  
+      await Pessoa.sync({force: true})
+      await Pessoa.bulkCreate(results);
+  })
