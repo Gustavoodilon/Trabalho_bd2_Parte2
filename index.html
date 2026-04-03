@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Busca de Pessoas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #121212;
+            color: #fff;
+            padding: 40px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: none;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+            background: #00bcd4;
+            color: black;
+            font-weight: bold;
+        }
+
+        .results {
+            margin-top: 30px;
+        }
+
+        .card {
+            background: #1e1e1e;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🔎 Busca de Pessoas</h1>
+
+    <!-- 🔹 Busca por nome -->
+    <h3>Buscar por Nome</h3>
+    <input type="text" id="nameInput" placeholder="Digite nome ou sobrenome">
+    <button onclick="buscarNome()">Buscar</button>
+
+    <!-- 🔹 Busca por Job -->
+    <h3>Buscar por Job</h3>
+    <input type="text" id="jobInput" placeholder="Digite o nome do job">
+    <button onclick="buscarJob()">Buscar</button>
+
+    <!-- Resultados -->
+    <div class="results" id="results"></div>
+</div>
+
+<script>
+    async function buscarNome() {
+        const termo = document.getElementById('nameInput').value;
+
+        const res = await fetch(`/buscar-nome?termo=${termo}`);
+        const data = await res.json();
+
+        renderResults(data);
+    }
+
+    async function buscarJob() {
+        const termo = document.getElementById('jobInput').value;
+
+        const res = await fetch(`/buscar-job?termo=${termo}`);
+        const data = await res.json();
+
+        renderResults(data);
+    }
+
+    function renderResults(lista) {
+        const div = document.getElementById('results');
+        div.innerHTML = '';
+
+        if (lista.length === 0) {
+            div.innerHTML = '<p>Nenhum resultado encontrado</p>';
+            return;
+        }
+
+        lista.forEach(p => {
+            div.innerHTML += `
+        <div class="card">
+          <strong>${p.first_name} ${p.last_name}</strong><br>
+          Email: ${p.email}<br>
+          Job: ${p.job.job_title || 'N/A'}
+        </div>
+      `;
+        });
+    }
+</script>
+
+</body>
+</html>
