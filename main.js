@@ -9,13 +9,6 @@ const PASSWORD = "64SAEtpb";
 const DATABASE = "sakila";
 const PORT = 10038;
 
-
-//const HOST = "localhost";
-//const USER = "dev";
-//const PASSWORD = "dev";
-//const DATABASE = "db_2";
-//const PORT = 3306;
-
 const sequelize = new Sequelize(DATABASE, USER, PASSWORD, {
     host: HOST,
     dialect: "mysql",
@@ -150,14 +143,7 @@ rl.on('line', (line) => {
           };
       });
 
-      //looping criado para adicionar registros aos poucos
-      //e evitar problemas no servidor
-      const BATCH_SIZE = 1000;
-
-      for (let i = 0; i < 1000; i += BATCH_SIZE) {
-          const batch = pessoasComJob.slice(i, i + BATCH_SIZE);
-          await Pessoa.bulkCreate(batch);
-      }
+     await Pessoa.bulkCreate(pessoasComJob);
 
   })
 

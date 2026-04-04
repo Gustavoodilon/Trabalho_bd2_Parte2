@@ -74,7 +74,7 @@
     async function buscarNome() {
         const termo = document.getElementById('nameInput').value;
 
-        const res = await fetch(`/buscar-nome?termo=${termo}`);
+        const res = await fetch(`http://localhost:3000/buscar-nome?termo=${termo}`);
         const data = await res.json();
 
         renderResults(data);
@@ -83,7 +83,7 @@
     async function buscarJob() {
         const termo = document.getElementById('jobInput').value;
 
-        const res = await fetch(`/buscar-job?termo=${termo}`);
+        const res = await fetch(`http://localhost:3000/buscar-job?termo=${termo}`);
         const data = await res.json();
 
         renderResults(data);
