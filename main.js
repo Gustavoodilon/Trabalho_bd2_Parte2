@@ -2,18 +2,19 @@ const { Sequelize, DataTypes } = require('sequelize');
 const fs = require('fs');
 const readline = require('readline');
 
-// Configuração do Banco
-// const HOST = "mysql-209830-0.cloudclusters.net";
-// const USER = "admin";
-// const PASSWORD = "81DvDok0";
-// const DATABASE = "sakila";
-// const PORT = 19121;
+//Configuração do Banco
+const HOST = "mysql-210170-0.cloudclusters.net";
+const USER = "admin";
+const PASSWORD = "64SAEtpb";
+const DATABASE = "sakila";
+const PORT = 10038;
 
-const HOST = "localhost";
-const USER = "dev";
-const PASSWORD = "dev";
-const DATABASE = "db_2";
-const PORT = 3306;
+
+//const HOST = "localhost";
+//const USER = "dev";
+//const PASSWORD = "dev";
+//const DATABASE = "db_2";
+//const PORT = 3306;
 
 const sequelize = new Sequelize(DATABASE, USER, PASSWORD, {
     host: HOST,
